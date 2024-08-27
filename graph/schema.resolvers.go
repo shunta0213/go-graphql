@@ -27,8 +27,18 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 }
 
 // Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+func (r *queryResolver) Todos(ctx context.Context, id *string) ([]*model.Todo, error) {
+	if id == nil {
+		return r.todos, nil
+	}
+
+	candidates := []*model.Todo{}
+	for _, todo := range r.todos {
+		if todo.ID == *id {
+			candidates = append(candidates, todo)
+		}
+	}
+	return candidates, nil
 }
 
 // User is the resolver for the user field.
